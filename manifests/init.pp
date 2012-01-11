@@ -18,6 +18,8 @@
 class graylog2 ( $glVersion = "0.9.6", $glBasePath = "/var/graylog2") {
 
   include java
+  include mongodb
+  include elasticsearch
 
   file { "${glBasePath}":
     ensure => "directory",
