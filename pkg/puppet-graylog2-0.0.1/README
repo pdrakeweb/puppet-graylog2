@@ -1,0 +1,15 @@
+graylog2
+
+This is the graylog2 module.
+
+In order to install graylog2, the following files should be downloaded and places in the files directory:
+  1. graylog2-server: https://github.com/Graylog2/graylog2-server/downloads (copy to modules/graylog2/files/graylog2-server-${glVersion}.tar.gz)
+  2. graylog2-web-interface: https://github.com/Graylog2/graylog2-web-interface/downloads (copy to modules/graylog2/files/graylog2-web-interface-${glVersion}.tar.gz)
+  
+Call graylog2 like:
+
+class role_prod_graylogserver {
+    class { graylog2: glVersion => "0.9.6" }
+    include graylog2::server
+    include graylog2::web
+}
