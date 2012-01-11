@@ -1,0 +1,4 @@
+# /etc/cron.d/graylog2: crontab fragment for graylog2
+
+# Send stream alarms and subscriptions every 15 minutes
+*/15 * * * * root cd <%= glBasePath %>/web && rake streamalarms:send && rake subscriptions:send
