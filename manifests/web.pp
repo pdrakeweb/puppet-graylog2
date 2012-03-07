@@ -118,7 +118,7 @@ class graylog2::web inherits graylog2 {
     ensure  => link,
     target  => "/etc/apache2/sites-available/graylog2",
     require => Exec["graylog2-web-extract"],
-    notify  => Exec["reload-apache2"],
+    notify  => Service["apache2"],
   }
 
 }
