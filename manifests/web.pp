@@ -16,8 +16,29 @@ class graylog2::web inherits graylog2 {
 
   include apache
 
+  package { "rubygems-update":
+    ensure    => installed,
+    provider  => gem,
+  }
+
+  exec { "update-rubygems":
+    path    => "/bin:/usr/bin:/usr/local/bin:/var/lib/gems/1.8/bin",
+    command => "update_rubygems",
+    creates => "/usr/bin/gem1.8",
+    require => Package["rubygems-update"],
+  }
+
+  package { "ruby-dev":
+    ensure  => installed,
+    require => Exec["update-rubygems"],
+  }
+
   if !defined(Package["bundler"]) {
-    package { "bundler": ensure => latest, provider => gem }
+    package { "bundler":
+      ensure => latest,
+      provider => gem,
+      require => Package["ruby1.8-dev"],
+    }
   }
 
   if !defined(Package["libapache2-mod-passenger"]) {
