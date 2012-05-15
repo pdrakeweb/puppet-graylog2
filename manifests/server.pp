@@ -62,6 +62,7 @@ class graylog2::server inherits graylog2 {
 
   service { "graylog2-server":
     ensure    => running,
+    enable    => true,
     hasstatus => false,
     start     => "start graylog2-server",
     stop      => "stop graylog2-server",
