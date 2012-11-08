@@ -15,7 +15,7 @@
 #   include graylog2 // note this is useless without including graylog2::server and/or graylog2::web
 #
 # [Remember: No empty lines between comments and class definition]
-class graylog2 ( $glVersion = "0.9.6", $glBasePath = "/var/graylog2") {
+class graylog2 ( $glVersion = "0.9.6p1", $glBasePath = "/var/graylog2") {
 
   include java
   include mongodb

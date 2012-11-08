@@ -17,19 +17,20 @@ class graylog2::server inherits graylog2 {
   include mongodb
   include elasticsearch
 
-  file { "${glBasePath}/src/graylog2-server-${glVersion}.tar.gz":
-    owner   => root,
-    group   => root,
-    mode    => 644,
-    source  => "puppet:///modules/graylog2/graylog2-server-${glVersion}.tar.gz",
+  exec { "${glBasePath}/src/graylog2-server-${glVersion}.tar.gz":
+    path        => "/bin:/usr/bin:/usr/local/bin",
+    cwd         => "${glBasePath}/src",
+    command     => "wget -q https://github.com/downloads/Graylog2/graylog2-server/graylog2-server-${glVersion}.tar.gz -O graylog2-server-${glVersion}.tar.gz" ,
+    creates     => "${glBasePath}/src/graylog2-server-${glVersion}.tar.gz",
+    require     => File["${glBasePath}/src"],
   }
-
+  
   exec { "graylog2-server-extract":
     path    => "/bin:/usr/bin:/usr/local/bin",
     cwd     => "${glBasePath}/src",
     command => "tar -xzf graylog2-server-${glVersion}.tar.gz",
-    require => File["${glBasePath}/src/graylog2-server-${glVersion}.tar.gz"],
     creates => "${glBasePath}/src/graylog2-server-${glVersion}",
+    require => Exec["${glBasePath}/src/graylog2-server-${glVersion}.tar.gz"],
   }
 
   file { "${glBasePath}/server":
@@ -45,14 +46,14 @@ class graylog2::server inherits graylog2 {
     mode    => 644,
     notify  => Service["graylog2-server"],
   }
-  
+
   file { "/etc/init/graylog2-server.conf":
     content => template("graylog2/graylog2-server.conf.erb"),
     owner   => root,
     group   => root,
     mode    => 644,
   }
-  
+
   file { "/etc/cron.d/graylog2-server":
     content => template("graylog2/graylog2-server.cron.erb"),
     owner   => root,

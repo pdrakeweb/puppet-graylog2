@@ -12,7 +12,7 @@
 #   include graylog2::web
 #
 # [Remember: No empty lines between comments and class definition]
-class graylog2::web inherits graylog2 {
+class graylog2::web ($glPort = "80") inherits graylog2 {
 
   include apache
 
@@ -37,26 +37,27 @@ class graylog2::web inherits graylog2 {
     package { "bundler":
       ensure => latest,
       provider => gem,
-      require => Package["ruby1.8-dev"],
+      require => Package["ruby-dev"],
     }
   }
 
   if !defined(Package["libapache2-mod-passenger"]) {
     package { "libapache2-mod-passenger": ensure => latest, }
   }
-  
-  file { "${glBasePath}/src/graylog2-web-interface-${glVersion}.tar.gz":
-    owner   => root,
-    group   => root,
-    mode    => 644,
-    source  => "puppet:///modules/graylog2/graylog2-web-interface-${glVersion}.tar.gz",
+
+  exec { "${glBasePath}/src/graylog2-web-interface-${glVersion}.tar.gz":
+    path        => "/bin:/usr/bin:/usr/local/bin",
+    cwd         => "${glBasePath}/src",
+    command     => "wget -q https://github.com/downloads/Graylog2/graylog2-web-interface/graylog2-web-interface-${glVersion}.tar.gz -O graylog2-web-interface-${glVersion}.tar.gz" ,
+    creates     => "${glBasePath}/src/graylog2-web-interface-${glVersion}.tar.gz",
+    require     => File["${glBasePath}/src"],
   }
 
   exec { "graylog2-web-extract":
     path    => "/bin:/usr/bin:/usr/local/bin",
     cwd     => "${glBasePath}/src",
     command => "tar -xzf graylog2-web-interface-${glVersion}.tar.gz",
-    require => File["${glBasePath}/src/graylog2-web-interface-${glVersion}.tar.gz"],
+    require => Exec["${glBasePath}/src/graylog2-web-interface-${glVersion}.tar.gz"],
     creates => "${glBasePath}/src/graylog2-web-interface-${glVersion}",
   }
 
