@@ -101,7 +101,7 @@ class graylog2::web ($glPort = "80") inherits graylog2 {
   }
 
   exec { "graylog2-web-install":
-    path    => "/bin:/usr/bin:${gem_bin_path}",
+    path    => "/bin:/usr/bin:/usr/local/bin:${gem_bin_path}",
     cwd     => "${glBasePath}/web",
     command => "bundle install && touch bundle-installed",
     require => [Package["bundler"], File["${glBasePath}/web"]],
